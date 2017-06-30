@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.davitmartirosyan.pl.db.entity.Product;
 import com.davitmartirosyan.pl.db.entity.ProductResponse;
+import com.davitmartirosyan.pl.io.bus.BusProvider;
 import com.davitmartirosyan.pl.io.rest.HttpRequestManager;
 import com.davitmartirosyan.pl.io.rest.HttpResponseUtil;
 import com.davitmartirosyan.pl.util.Constant;
@@ -105,7 +106,9 @@ public class PLIntentService extends IntentService {
                 Log.d(LOG_TAG,products.get(0).toString());
 
                 // todo: insert list into DB
-                
+
+                BusProvider.getInstance().post(products);
+
                 break;
             case HttpRequestManager.RequestType.PRODUCT_ITEM:
                 connection = HttpRequestManager.executeRequest(
