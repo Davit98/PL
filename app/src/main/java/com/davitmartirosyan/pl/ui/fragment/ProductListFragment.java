@@ -5,11 +5,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.davitmartirosyan.pl.R;
 import com.davitmartirosyan.pl.io.rest.HttpRequestManager;
 import com.davitmartirosyan.pl.io.service.PLIntentService;
 import com.davitmartirosyan.pl.util.Constant;
+import com.davitmartirosyan.pl.util.NetworkUtil;
 
 public class ProductListFragment extends BaseFragment implements View.OnClickListener {
 
@@ -64,11 +66,22 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
         getData();
         customizeActionBar();
 
-        PLIntentService.start(
-                getActivity(),
-                Constant.API.URL,
-                HttpRequestManager.RequestType.PRODUCT_LIST
-        );
+        if(NetworkUtil.getInstance().isConnected(view.getContext())) {
+//            PLIntentService.start(
+//                    getActivity(),
+//                    Constant.API.PRODUCT_LIST,
+//                    HttpRequestManager.RequestType.PRODUCT_LIST
+//            );
+
+            PLIntentService.start(
+                    getActivity(),
+                    Constant.API.PRODUCT_ITEM,
+                    HttpRequestManager.RequestType.PRODUCT_ITEM
+            );
+        }
+        else {
+            Toast.makeText(view.getContext(), R.string.msg_connection_error,Toast.LENGTH_LONG).show();
+        }
 
         return view;
     }

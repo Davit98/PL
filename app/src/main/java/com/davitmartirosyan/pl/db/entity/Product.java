@@ -16,22 +16,26 @@ public class Product {
     @SerializedName("image")
     private String image;
 
+    @SerializedName("description")
+    private String description;
+
     public Product() {
     }
 
-    public Product(int id, String name, int price, String image) {
-        this.id = Integer.toString(id);
+    public Product(String id, String name, int price, String image, String description) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.image = image;
+        this.description = description;
     }
 
-    public int getId() {
-        return Integer.parseInt(id);
+    public String getId() {
+        return id;
     }
 
-    public void setId(int id) {
-        this.id = Integer.toString(id);
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -56,6 +60,14 @@ public class Product {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
