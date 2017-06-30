@@ -50,7 +50,8 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        // I don't know what this is for. Let's keep it yet.
+        //setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -65,8 +66,7 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
 
         PLIntentService.start(
                 getActivity(),
-                this.getClass().getSimpleName(),
-                "https://s3-eu-west-1.amazonaws.com/developer-application-test/cart/list",
+                Constant.API.URL,
                 HttpRequestManager.RequestType.PRODUCT_LIST
         );
 

@@ -63,8 +63,10 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if(!mNavigationView.getMenu().findItem(R.id.nav_product_list).isChecked()) {
+            onNavigationItemSelected(mNavigationView.getMenu().findItem(R.id.nav_product_list));
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 
@@ -89,7 +91,7 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
                 break;
 
             case R.id.nav_about:
-                openScreen(AboutFragment.newInstance(),R.id.nav_product_list,true);
+                openScreen(AboutFragment.newInstance(),R.id.nav_about,true);
                 break;
         }
 

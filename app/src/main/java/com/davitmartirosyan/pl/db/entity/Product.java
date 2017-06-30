@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Product {
     @SerializedName("product_id")
-    private int id;
+    private String id;
 
     @SerializedName("name")
     private String name;
@@ -20,18 +20,18 @@ public class Product {
     }
 
     public Product(int id, String name, int price, String image) {
-        this.id = id;
+        this.id = Integer.toString(id);
         this.name = name;
         this.price = price;
         this.image = image;
     }
 
     public int getId() {
-        return id;
+        return Integer.parseInt(id);
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.id = Integer.toString(id);
     }
 
     public String getName() {
@@ -56,5 +56,15 @@ public class Product {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().
+                append("Id: ").append(getId()).append("\n").
+                append("Name: ").append(getName()).append("\n").
+                append("Price: ").append(getPrice()).append("\n").
+                append("Image: ").append(getImage()).append("\n").
+                toString();
     }
 }
