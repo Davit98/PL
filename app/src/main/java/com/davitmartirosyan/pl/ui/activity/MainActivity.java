@@ -94,7 +94,6 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
                 openScreen(AboutFragment.newInstance(),R.id.nav_about,true);
                 break;
         }
-
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -143,7 +142,7 @@ public class MainActivity extends  BaseActivity  implements View.OnClickListener
                 getSupportFragmentManager(),
                 fragment,
                 R.id.fl_main_container,
-                false
+                mustAddToBackStack
         );
     }
 

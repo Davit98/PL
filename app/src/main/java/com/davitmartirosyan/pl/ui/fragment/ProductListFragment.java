@@ -2,12 +2,18 @@ package com.davitmartirosyan.pl.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.davitmartirosyan.pl.R;
 import com.davitmartirosyan.pl.db.entity.Product;
@@ -21,7 +27,7 @@ import com.google.common.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
-public class ProductListFragment extends BaseFragment implements View.OnClickListener {
+public class ProductListFragment extends BaseFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     // ===========================================================
     // Constants
@@ -36,6 +42,11 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private static ArrayList<Product> products;
+    private ProgressBar progressBar;
+    private RelativeLayout relativeLayout;
+    private TextView noNetwork;
+    private ImageView noNetworkIcon;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private Bundle mArgumentData;
 
@@ -72,14 +83,29 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.d("testt","onCreateView");
         View view = inflater.inflate(R.layout.fragment_product_list, container, false);
         BusProvider.register(this);
         findViews(view);
+        swipeRefreshLayout.setEnabled(false);
         setListeners();
         getData();
         customizeActionBar();
+        makeRequest();
 
-        if(NetworkUtil.getInstance().isConnected(view.getContext())) {
+
+        // To be moved elsewhere
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        return view;
+    }
+
+    public void makeRequest() {
+        Log.d("testt","makeRequest");
+        if(NetworkUtil.getInstance().isConnected(getContext())) {
             PLIntentService.start(
                     getActivity(),
                     Constant.API.PRODUCT_LIST,
@@ -93,15 +119,24 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
 //            );
         }
         else {
-            Toast.makeText(view.getContext(), R.string.msg_connection_error,Toast.LENGTH_LONG).show();
+            if(!swipeRefreshLayout.isEnabled()) {
+                swipeRefreshLayout.setEnabled(true);
+            }
+            swipeRefreshLayout.setRefreshing(false);
+            progressBar.setVisibility(View.GONE);
+            noNetwork.setVisibility(View.VISIBLE);
+            noNetworkIcon.setVisibility(View.VISIBLE);
         }
-
-        return view;
     }
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if(swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        Log.d("testt","onDestroyView");
         BusProvider.unregister(this);
     }
 
@@ -125,22 +160,45 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
 
     @Subscribe
     public void onEventReceived(ArrayList<Product> productArrayList) {
+        Log.d("testt","onEventReceived");
+        noNetwork.setVisibility(View.GONE);
+        noNetworkIcon.setVisibility(View.GONE);
         products = productArrayList;
-        doRecyclerView();
+        drawRecyclerView();
     }
 
     private void setListeners() {
-
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     private void findViews(View view) {
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
+        progressBar = (ProgressBar)view.findViewById(R.id.product_list_pb);
+        relativeLayout = (RelativeLayout)view.findViewById(R.id.product_list_root_rl);
+        noNetwork = (TextView)view.findViewById(R.id.product_list_no_network_tv);
+        noNetworkIcon = (ImageView)view.findViewById(R.id.product_list_no_network_icon_iv);
+        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.product_list_swipe_srl);
     }
 
-    private void doRecyclerView() {
+    private void drawRecyclerView() {
+        Log.d("testt","drawRecyclerView");
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         productAdapter = new ProductAdapter(products,getContext());
         recyclerView.setAdapter(productAdapter);
+
+        relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                relativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                if(progressBar.isShown()) {
+                    progressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setEnabled(true);
+                }
+                if(swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
     public void getData() {
@@ -150,7 +208,16 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void customizeActionBar() {
+    }
 
+    @Override
+    public void onRefresh() {
+        if (productAdapter != null) {
+            products.clear();
+            productAdapter.notifyDataSetChanged();
+        }
+        makeRequest();
+        Log.d("testt", "onRefresh");
     }
 
     // ===========================================================

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.davitmartirosyan.pl.db.entity.Product;
 import com.davitmartirosyan.pl.db.entity.ProductResponse;
+import com.davitmartirosyan.pl.db.handler.PlQueryHandler;
 import com.davitmartirosyan.pl.io.bus.BusProvider;
 import com.davitmartirosyan.pl.io.rest.HttpRequestManager;
 import com.davitmartirosyan.pl.io.rest.HttpResponseUtil;
@@ -71,6 +72,8 @@ public class PLIntentService extends IntentService {
 
     public static void start(Context context, String url,
                              int requestType) {
+
+        Log.d("testt","start");
         Intent intent = new Intent(context, PLIntentService.class);
         intent.putExtra(Extra.URL, url);
         intent.putExtra(Extra.REQUEST_TYPE, requestType);
@@ -88,6 +91,8 @@ public class PLIntentService extends IntentService {
         int requestType = intent.getExtras().getInt(Extra.REQUEST_TYPE);
         Log.i(LOG_TAG, requestType + Constant.Symbol.SPACE + url);
 
+        Log.d("testt","onHandleIntent");
+
         HttpURLConnection connection;
 
         switch (requestType) {
@@ -97,15 +102,13 @@ public class PLIntentService extends IntentService {
                         HttpRequestManager.RequestMethod.GET,
                         null);
                 String jsonList = HttpResponseUtil.parseResponse(connection);
-                Log.d(LOG_TAG, jsonList);
 
                 ProductResponse productResponse = new Gson().fromJson(jsonList, ProductResponse.class);
                 ArrayList<Product> products = productResponse.getProducts();
-                Log.d(LOG_TAG, "Products amount " + products.size());
-                // Experimenting with products
-                Log.d(LOG_TAG,products.get(0).toString());
 
-                // todo: insert list into DB
+                PlQueryHandler.deleteProducts(this);
+
+                PlQueryHandler.addProducts(this, products);
 
                 BusProvider.getInstance().post(products);
 

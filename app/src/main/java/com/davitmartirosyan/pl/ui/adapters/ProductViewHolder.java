@@ -27,6 +27,9 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
     public void bind(Product product, Context context) {
         productName.setText(productName!=null ? product.getName() : "");
         productPrice.setText(productPrice!=null ? Integer.toString(product.getPrice()) : "");
-        Glide.with(context).load(product.getImage()).into(productPicture);
+        Glide.with(context)
+                .load(product.getImage())
+                //.centerCrop()
+                .into(productPicture);
     }
 }

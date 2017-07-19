@@ -1,50 +1,62 @@
-package com.davitmartirosyan.pl.util;
+package com.davitmartirosyan.pl.db;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-public class NetworkUtil {
-    // ===========================================================
+
+public class PlDataBaseHelper extends SQLiteOpenHelper {
+
+// ===========================================================
     // Constants
     // ===========================================================
-    private static final String LOG_TAG = NetworkUtil.class.getSimpleName();
+
+    private static final String LOG_TAG = PlDataBaseHelper.class.getName();
+
+    private static final String DATABASE_NAME = "PL.DB";
+    private static final int DATABASE_VERSION = 1;
+
     // ===========================================================
     // Fields
     // ===========================================================
-    private static NetworkUtil sInstance;
+
     // ===========================================================
     // Constructors
     // ===========================================================
-    private NetworkUtil() {
+
+    public PlDataBaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-    public static NetworkUtil getInstance() {
-        if (sInstance == null) {
-            sInstance = new NetworkUtil();
-        }
-        return sInstance;
-    }
+
     // ===========================================================
     // Getter & Setter
     // ===========================================================
+
     // ===========================================================
     // Methods for/from SuperClass
     // ===========================================================
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(PlDataBase.CREATE_PRODUCT_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + PlDataBase.PRODUCT_TABLE);
+        onCreate(db);
+    }
+
     // ===========================================================
     // Listeners, methods for/from Interfaces
     // ===========================================================
+
     // ===========================================================
     // Methods
     // ===========================================================
-    public boolean isConnected(Context context) {
-        Log.d("testt","isConnected");
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnectedOrConnecting();
-    }
+
     // ===========================================================
     // Inner and Anonymous Classes
     // ===========================================================
+
 }

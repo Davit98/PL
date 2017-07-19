@@ -1,6 +1,8 @@
 package com.davitmartirosyan.pl.io.rest;
 
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -29,6 +31,7 @@ public class HttpRequestManager {
             connection = (HttpURLConnection) ulr.openConnection();
             connection.setRequestMethod(requestMethod);
             connection.setUseCaches(false);
+            Log.d("testt","executeRequest");
 
             switch (requestMethod) {
                 case RequestMethod.GET:

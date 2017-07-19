@@ -13,6 +13,7 @@ public class HttpResponseUtil {
     private static final String LOG_TAG = HttpResponseUtil.class.getSimpleName();
 
     public static String parseResponse(HttpURLConnection connection) {
+        Log.d("testt","parseResponse1");
         InputStreamReader streamReader = null;
         BufferedReader reader = null;
         String result = null;
@@ -28,6 +29,8 @@ public class HttpResponseUtil {
             reader.close();
             streamReader.close();
             connection.disconnect();
+
+            Log.d("testt","parseResponse2");
 
             result = stringBuilder.toString();
             Log.d(LOG_TAG, result);
