@@ -20,7 +20,7 @@ public class PlProvider extends ContentProvider {
     // Constants
     // ===========================================================
 
-    private static final String LOG_TAG = PlProvider.class.getName();
+    private static final String LOG_TAG = PlProvider.class.getSimpleName();
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID;
 
@@ -90,9 +90,14 @@ public class PlProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
             case Code.SINGLE_PRODUCT:
+                id = db.insertWithOnConflict(PlDataBase.PRODUCT_TABLE, null, values,
+                        SQLiteDatabase.CONFLICT_IGNORE);
+                contentUri = ContentUris.withAppendedId(UriBuilder.buildProductUri(), id);
+                break;
+
             case Code.ALL_PRODUCTS:
                 id = db.insertWithOnConflict(PlDataBase.PRODUCT_TABLE, null, values,
-                        SQLiteDatabase.CONFLICT_REPLACE);
+                        SQLiteDatabase.CONFLICT_IGNORE);
                 contentUri = ContentUris.withAppendedId(UriBuilder.buildProductUri(), id);
                 break;
 

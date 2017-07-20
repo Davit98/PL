@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.davitmartirosyan.pl.R;
 import com.davitmartirosyan.pl.db.entity.Product;
+import com.davitmartirosyan.pl.db.handler.PlAsyncQueryHandler;
 import com.davitmartirosyan.pl.io.bus.BusProvider;
 import com.davitmartirosyan.pl.io.rest.HttpRequestManager;
 import com.davitmartirosyan.pl.io.service.PLIntentService;
@@ -47,6 +48,7 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     private TextView noNetwork;
     private ImageView noNetworkIcon;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private PlAsyncQueryHandler mPlAsyncQueryHandler;
 
     private Bundle mArgumentData;
 
@@ -75,8 +77,7 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // I don't know what this is for. Let's keep it yet.
-        //setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -102,6 +103,7 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
 
         return view;
     }
+
 
     public void makeRequest() {
         Log.d("testt","makeRequest");
@@ -215,6 +217,12 @@ public class ProductListFragment extends BaseFragment implements View.OnClickLis
         if (productAdapter != null) {
             products.clear();
             productAdapter.notifyDataSetChanged();
+        }
+        if(noNetwork.isShown()) {
+            noNetwork.setVisibility(View.GONE);
+        }
+        if(noNetworkIcon.isShown()) {
+            noNetworkIcon.setVisibility(View.GONE);
         }
         makeRequest();
         Log.d("testt", "onRefresh");

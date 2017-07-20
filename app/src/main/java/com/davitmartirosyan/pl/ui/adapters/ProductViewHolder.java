@@ -29,7 +29,7 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
         productPrice.setText(productPrice!=null ? Integer.toString(product.getPrice()) : "");
         Glide.with(context)
                 .load(product.getImage())
-                //.centerCrop()
+                .centerCrop()
                 .into(productPicture);
     }
 }

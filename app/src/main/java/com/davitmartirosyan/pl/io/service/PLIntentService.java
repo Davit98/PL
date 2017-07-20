@@ -104,6 +104,7 @@ public class PLIntentService extends IntentService {
                 String jsonList = HttpResponseUtil.parseResponse(connection);
 
                 ProductResponse productResponse = new Gson().fromJson(jsonList, ProductResponse.class);
+
                 ArrayList<Product> products = productResponse.getProducts();
 
                 PlQueryHandler.deleteProducts(this);

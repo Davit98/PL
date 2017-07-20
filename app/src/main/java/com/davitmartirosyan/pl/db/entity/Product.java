@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 
 public class Product {
+
     @SerializedName("product_id")
     private String id;
 

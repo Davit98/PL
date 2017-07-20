@@ -17,6 +17,7 @@ public class Constant {
 
     public class Extra {
         public static final String EXTRA_USER = "EXTRA_USER";
+        public static final String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     }
 
     public class Bundle {
@@ -77,5 +78,18 @@ public class Constant {
     public class Build {
         public static final String RELEASE = "release";
         public static final String DEBUG = "debug";
+    }
+
+    public class Json {
+        public static final String PRODUCTS = "products";
+        public static final String ID = "product_id";
+        public static final String NAME = "name";
+        public static final String PRICE = "price";
+        public static final String IMAGE = "image";
+        public static final String DESCRIPTION = "description";
+    }
+
+    public class Image {
+        public static final String DEFULT_IMAGE = "https://s3-eu-west-1.amazonaws.com/developer-application-test/images/3.jpg";
     }
 }
